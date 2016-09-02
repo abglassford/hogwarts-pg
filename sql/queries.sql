@@ -67,3 +67,37 @@ ON p.id = s.parent_id
 JOIN classes c
 ON cs.class_id = c.id
 WHERE c.subject = 'How to Not Die';
+
+-- Add a class taught by Albus Dumbledore with the subject of 'Mirrors & Magic'
+
+INSERT INTO teachers (first_name, last_name)
+VALUES ('Albus', 'Dumbledore');
+INSERT INTO classes (subject, teacher_id)
+VALUES ('Mirros & Magic', (SELECT id FROM teachers WHERE last_name = 'Dumbledore'));
+
+-- Add Dumbledore's class to Harry's class list
+
+INSERT INTO classes_students (student_id, class_id)
+VALUES
+(
+  (SELECT id FROM students WHERE first_name = 'Harry'),
+  (SELECT id FROM classes WHERE subject = 'Mirros & Magic')
+);
+
+-- Albus' class is cancelled due to unfortunate events. Remove Albus and his class from Hogwart's database.
+
+DELETE
+FROM teachers
+WHERE first_name = 'Albus';
+DELETE
+FROM classes_students
+WHERE class_id = 5;
+DELETE
+FROM classes
+WHERE classes.id = 5;
+
+-- Serverus Snape is taking over as instructor for 'How to Not Die.' Update the database
+
+UPDATE classes
+SET teacher_id = (SELECT id FROM teachers WHERE last_name = 'Snape')
+WHERE subject = 'How to Not Die';
